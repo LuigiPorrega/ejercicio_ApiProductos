@@ -1,0 +1,96 @@
+@defer(when cargado){
+  <div class="album py-5 bg-body-tertiary">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        @for(product of products; track product.id){
+        <div class="col">
+          <div class="card shadow-sm">
+            <div class="d-flex justify-content-center">
+              <img [src]="product.image" [alt]="product.title"
+                   class="bd-placeholder-img card-img-top p-4  w-75">
+            </div>
+            <div class="card-body mt-3">
+              <h5 class="card-title text-primary">{{product.title}}</h5>
+              <div class="d-flex justify-content-evenly mt-3  mb-3">
+                <span class="badge bg-primary mb-2">{{product.category}}</span>
+                <!-- gestiono el pointer en css para que aparezca el cursor a pointer -->
+                <h5 class="pointer">
+                  <!-- lanzo el modal -->
+                  <fa-icon [icon]="faTrashCan" class="text-danger"
+                           data-bs-toggle="modal"
+                           [attr.data-bs-target]="'#deleteModal'+product.id"></fa-icon>
+                </h5>
+              </div>
+
+              <!-- Modal -->
+              <div class="modal fade" [attr.id]="'deleteModal'+product.id"
+                   tabindex="-1"
+                   aria-labelledby="deleteModalLabel"
+                   aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Product</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <h5>Do you want to delete <span class="text-danger">{{product.title}}</span></h5>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-danger" (click)="deleteProduct(product)"
+                      data-bs-dismiss="modal">DELETE</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--fin del modal-->
+
+              <p class="card-text">{{product.description}}</p>
+            </div>
+              <div class="card-footer">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary"
+                  [routerLink]="'/product-edit/' + product.id">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary"
+                  (click)="addToCart(product)">
+                    <fa-icon [icon]="faCartShopping"></fa-icon>
+                  </button>
+                </div>
+                <!-- cambio de color rojo o verde según la cantidad de puntuación -->
+                <!-- controlo los decimales que quiero aparezcan -->
+                <div class="fw-bold"
+                     [ngClass]="{'text-success' : product.rating.rate>3 ,'text-danger' : product.rating.rate<=3 }">
+                  Vote: {{product.rating.rate | number : '1.0-2'}}
+                </div>
+                <!-- Transformo el precio en Euro -->
+                <small class="text-body-secondary">
+                  {{ product.price | currency: 'EUR' }}
+                </small>
+              </div>
+              </div>
+            </div>
+          </div>
+
+  <!-- toast-->
+  @if(toastShow){
+    <ngb-toast class="toast-container {{toast.color}} p-2 position-fixed
+                      bottom-0 start-0" style="z-index: 1200">
+      {{toast.body}}
+    </ngb-toast>
+  }
+        }
+      </div>
+    </div>
+  </div>
+}@placeholder(){
+  <!--spinner-->
+  <div class="position-fixed top-50 start-50 translate-middle-x mb-3  text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+}

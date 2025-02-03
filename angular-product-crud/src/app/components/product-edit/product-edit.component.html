@@ -1,0 +1,212 @@
+@defer(when cargado){
+  <div class="row d-flex justify-content-around">
+    <div class="col-md-6 col-sm-6 mt-4">
+        <!-- aqui pongo el titulo antes del formulario -->
+        @if(editar){
+          <h3 class="text-primary">Editando: {{title?.value}}</h3>
+        }@else{
+          <h3> New Product </h3>
+        }
+
+      <ng-form [formGroup]="formProduct">
+        <!-- floating title-->
+        <div class="form-floating mb-3">
+          <input type="text"  class="form-control"
+                 formControlName="title" id="title" placeholder="Title">
+          <label for="title">Title</label>
+        </div>
+        <!-- controlo las validaciones-->
+        @if(title.invalid && (title.dirty || title.touched)){
+          @if(title.errors ['required']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El campo Title es obligatorio
+            </div>
+          }
+          @if(title.errors ['minLength']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El Title tiene que tener almeno 2 caracteres
+            </div>
+          }
+          @if(title.errors ['maxLength']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El Title tiene que tener maximo 50 caracteres
+            </div>
+          }
+        }
+        <!-- floating price-->
+        <div class="form-floating mb-3">
+          <input type="number" inputmode="numeric" class="form-control"
+                 formControlName="price" id="price" placeholder="Price in €">
+          <label for="price">Price in €</label>
+        </div>
+        <!-- controlo las validaciones-->
+        @if(price.invalid && (price.dirty || price.touched)){
+          @if(price.errors ['required']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El campo Price es obligatorio
+            </div>
+          }
+        }
+        <!-- floating description-->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control"
+                 formControlName="description" id="description" placeholder="Description">
+          <label for="description">Description</label>
+        </div>
+        <!-- controlo las validaciones-->
+        @if(description.invalid && (description.dirty || description.touched)){
+          @if(description.errors ['notOnlyWhiteSpace']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El campo Description no puede ser espacios en blancos
+            </div>
+          }
+          @if(description.errors ['forbiddenName']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El campo Description, no puede contener palabras como: 'xxx,sex,drug';
+            </div>
+          }
+        }
+        <!-- floating category-->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control"
+                 formControlName="category" id="category" placeholder="Category">
+          <label for="category">Category</label>
+        </div>
+        <!-- controlo las validaciones-->
+        @if(category.invalid && (category.dirty || category.touched)){
+          @if(category.errors ['required']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El campo Category es obligatorio
+            </div>
+          }
+          @if(category.errors ['minLength']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              Category tiene que tener almeno 2 caracteres
+            </div>
+          }
+        }
+        <!-- floating image-->
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control"
+                 formControlName="image" id="image" placeholder="Image">
+          <label for="image">Image</label>
+        </div>
+        <!-- controlo las validaciones-->
+        @if(image.invalid && (image.dirty || image.touched)){
+          @if(image.errors ['required']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El campo Image es obligatorio
+            </div>
+          }
+        }
+        <!-- floating rate-->
+        <div formGroupName="rating">
+        <div class="form-floating mb-3">
+          <input type="number" class="form-control"
+                 formControlName="rate" id="rate" placeholder="Rate">
+          <label for="rate">Rate</label>
+        </div>
+        <!-- controlo las validaciones-->
+        @if(rate.invalid && (rate.dirty || rate.touched)){
+          @if(rate.errors ['min']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El numero Minimo es  1
+            </div>
+          }
+          @if(rate.errors ['max']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El numero Maximo es  30
+            </div>
+          }
+        }
+        <!-- floating count-->
+        <div class="form-floating mb-3">
+          <input type="number" class="form-control"
+                 formControlName="count" id="count" placeholder="Count">
+          <label for="count">Count</label>
+        </div>
+        <!-- controlo las validaciones-->
+        @if(count.invalid && (count.dirty || count.touched)){
+          @if(count.errors ['max']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              El numero Maximo es  30
+            </div>
+          }
+        }
+        </div>
+        <!-- Buttón para controlar insertar o modificar-->
+        <div class="d-flex justify-content-center">
+          <button type="submit" class="btn btn-success mt-3" (click)="onSubmit()">
+            {{id ? 'edit' : 'add'}}
+          </button>
+        </div>
+      </ng-form>
+    </div>
+
+    <!--previsualización de la card-->
+    <div class="col-md-4 col-sm-6">
+                <div class="card shadow-sm mt-4">
+                  <div class="d-flex justify-content-center">
+                    <!--me guardo una imagen en public/images y la utilizo en caso no se carga-->
+                    <img src="{{image.value ? image.value : 'images/no-image.jpg'}}"
+                         alt="{{title.value ? title.value : 'Image'}}"
+                         class="bd-placeholder-img card-img-top p-4 w-75">
+                  </div>
+                  <div class="card-body mt-3 ">
+                    <h5 class="card-title text-primary">{{title.value? title.value : 'Title'}}</h5>
+                    <span class="badge bg-primary mb-2">{{category.value? category.value : 'Category'}}</span>
+                    <p class="card-text">{{description.value? description.value : 'Description'}}</p>
+                  </div>
+                  <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                          <fa-icon [icon]="faEdit"></fa-icon>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                          <fa-icon [icon]="faCartShopping"></fa-icon>
+                        </button>
+                      </div>
+                      <!-- cambio de color rojo o verde según la cantidad de puntuación -->
+                      <!-- controlo los decimales que quiero aparezcan -->
+                      <div class="fw-bold"
+                           [ngClass]="{'text-success' : rate.value > 3 ,'text-danger' : rate.value <= 3 }">
+                        Vote: {{rate.value ? (rate.value  | number : '1.0-2') : '0.00'}}
+                      </div>
+                      <!-- Transformo el precio en Euro -->
+                      <small class="text-body-secondary">
+                        {{price.value? (price.value  | currency: 'EUR') : '0.00 €'}}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- toast-->
+              @if(toastShow){
+                <ngb-toast class="toast-container {{toast.color}} p-2 position-fixed
+                      bottom-0 start-0" style="z-index: 1200">
+                  {{toast.body}}
+                </ngb-toast>
+              }
+          </div>
+}@placeholder(){
+  <!--spinner-->
+  <div class="position-fixed top-50 start-50 translate-middle-x mb-3  text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+}
