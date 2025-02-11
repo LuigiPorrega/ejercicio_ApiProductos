@@ -4,6 +4,7 @@
   "author": {
   "name": "Luigi Porrega"
   },
+  "description": "Web with crud - API PRODUCTS",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

@@ -17,4 +17,11 @@ export class FormValidators {
       return forbidden? {forbiddenName: {value: control.value}} : null;
     }
   }
+
+  //utilizo el REGEXR.COM (regla de obligación de tipos de ficheros)
+  static allowedData(files: RegExp) : ValidatorFn {
+    return (control: AbstractControl) : ValidationErrors | null  => {
+      const allowed = files.test(control.value);
+      return allowed ? null : {allowedFiles : true}};
+  }
 }

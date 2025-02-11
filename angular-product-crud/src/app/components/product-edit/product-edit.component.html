@@ -23,13 +23,13 @@
               El campo Title es obligatorio
             </div>
           }
-          @if(title.errors ['minLength']){
+          @if(title.errors ['minlength']){
             <!-- alert-danger o alert-warning (amarillo) -->
             <div class="alert alert-danger" role="alert">
               El Title tiene que tener almeno 2 caracteres
             </div>
           }
-          @if(title.errors ['maxLength']){
+          @if(title.errors ['maxlength']){
             <!-- alert-danger o alert-warning (amarillo) -->
             <div class="alert alert-danger" role="alert">
               El Title tiene que tener maximo 50 caracteres
@@ -86,7 +86,7 @@
               El campo Category es obligatorio
             </div>
           }
-          @if(category.errors ['minLength']){
+          @if(category.errors ['minlength']){
             <!-- alert-danger o alert-warning (amarillo) -->
             <div class="alert alert-danger" role="alert">
               Category tiene que tener almeno 2 caracteres
@@ -105,6 +105,12 @@
             <!-- alert-danger o alert-warning (amarillo) -->
             <div class="alert alert-danger" role="alert">
               El campo Image es obligatorio
+            </div>
+          },
+          @if(image.errors ['allowedData']){
+            <!-- alert-danger o alert-warning (amarillo) -->
+            <div class="alert alert-danger" role="alert">
+              Los archivos permitidos son en .jpg .png .jpeg
             </div>
           }
         }

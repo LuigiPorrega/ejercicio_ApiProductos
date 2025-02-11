@@ -43,19 +43,20 @@ export class ProductEditComponent implements OnInit {
   toast = {
     body: '',
     color: 'bg-success',
+    duration: 1500,
   }
 
   //creo una variable para controlarlo
   toastShow = false;
 
 //creo una función para llamarlo
-  private showToast(message: string, color: string) {
+  private showToast(message: string, color: string, duration: number) {
     this.toast.body = message;
     this.toast.color = color;
     this.toastShow = true;
     setTimeout(() => {
       this.toastShow = false;
-    }, 2000);
+    }, duration);
   }
 
   //FORMULARIO REACTIVO
@@ -67,7 +68,7 @@ export class ProductEditComponent implements OnInit {
     //utilizo las Validaciones personalizadas en description:
     description: ['', [ FormValidators.notOnlyWhiteSpace, FormValidators.forbiddenName(/xxx|sex|drug/i)]],
     category: ['', [Validators.required, Validators.minLength(2)]],
-    image: ['', [Validators.required ]],
+    image: ['', [Validators.required, FormValidators.allowedData(/.jpg$|.png$|.jpeg$/)]], //todo minusculo
     //rating es un array dentro de mi interface
     rating: this.formBuilder.group({
       rate: [0, [Validators.min(1), Validators.max(30)]],   //para los numeros
@@ -116,10 +117,10 @@ export class ProductEditComponent implements OnInit {
           console.log(value);
         },
         complete: () => {
-          this.showToast('Product loaded', 'bg-success text-light');
+          this.showToast('Product loaded', 'bg-success text-light', 1500);
         },
         error: error => {
-          this.showToast(error.message, 'bg-danger text-light');
+          this.showToast(error.message, 'bg-danger text-light',2000);
         },
     });
   }else{
@@ -148,7 +149,7 @@ export class ProductEditComponent implements OnInit {
       this.productService.updateProduct
       (this.formProduct.get('id')?.value, this.formProduct.getRawValue()).subscribe({
         next: value =>{
-          this.showToast(value.title + ' actualizado', 'bg-success text-light');
+          this.showToast(value.title + ' actualizado', 'bg-success text-light',1500);
         },
         complete: ()=>{
           setTimeout(()=>{
@@ -156,14 +157,14 @@ export class ProductEditComponent implements OnInit {
           }, 1000);
         },
         error: error => {
-          this.showToast(error.message, 'bg-danger text-light');
+          this.showToast(error.message, 'bg-danger text-light',2000);
         }
       });
     }else{
       //ESTOY AÑADIENDO
       this.productService.addProduct(this.formProduct.getRawValue()).subscribe({
         next: value => {
-          this.showToast(value.title + ' añadido', 'bg-success text-light');
+          this.showToast(value.title + ' añadido', 'bg-success text-light',1500);
         },
         complete: ()=> {
           setTimeout(() => {
@@ -171,10 +172,10 @@ export class ProductEditComponent implements OnInit {
           }, 1000);
         },
         error: error => {
-          this.showToast(error.message, 'bg-danger text-light');
+          this.showToast(error.message, 'bg-danger text-light',2000);
         }
       });
     }
-    this.showToast('Formulario enviado' , 'bg-success text-light');
+    this.showToast('Formulario enviado' , 'bg-success text-light',1500);
   }
 }

@@ -9,6 +9,8 @@ import {faCartShopping} from "@fortawesome/free-solid-svg-icons/faCartShopping";
 import {RouterLink} from "@angular/router";
 import {CartService} from "../../services/cart.service";
 import {faTrashCan} from "@fortawesome/free-regular-svg-icons";
+import {SearchService} from '../../services/search.service';
+import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 
 @Component({
   selector: 'app-product-list',
@@ -25,6 +27,9 @@ import {faTrashCan} from "@fortawesome/free-regular-svg-icons";
   styleUrl: './product-list.component.css'
 })
 export class ProductListComponent {
+  // llamo al servicio del Search
+  private readonly searchService: SearchService = inject (SearchService);
+
   //llamo al servicio del carrito "cart"
   private readonly cartService: CartService = inject(CartService);
   //llamo al servicio de productos
@@ -38,23 +43,25 @@ export class ProductListComponent {
   toast = {
     body: '',
     color: 'bg-success',
+    duration: 1500,
   }
   //creo una variable para controlarlo
   toastShow = false;
 
 
   //creo una función para llamarlo
-  private showToast(message: string, color: string) {
+  private showToast(message: string, color: string, duration: number) {
     this.toast.body = message;
     this.toast.color = color;
     this.toastShow = true;
     setTimeout(() => {
       this.toastShow = false;
-    }, 2000);
+    }, duration);
   }
 
   constructor() {
     this.loadProducts();
+    this.loadSearch();
   }
 
   private loadProducts() {
@@ -64,10 +71,10 @@ export class ProductListComponent {
         this.cargado = true;
       },
       complete: () => {
-        this.showToast('Products loaded', 'bg-success text-light');
+        this.showToast('Products loaded', 'bg-success text-light', 1500);
       },
       error: error => {
-        this.showToast(error.message, 'bg-danger text-light');
+        this.showToast(error.message, 'bg-danger text-light', 2000);
       },
     });
   }
@@ -77,7 +84,7 @@ export class ProductListComponent {
 
   addToCart(product: Product) {
     this.cartService.addToCart(product);
-    this.showToast(product.title + 'add to cart!', 'bg-success text-light');
+    this.showToast(product.title + 'add to cart!', 'bg-success text-light',2000);
   }
 
   protected readonly faTrashCan = faTrashCan;
@@ -85,11 +92,31 @@ export class ProductListComponent {
   deleteProduct(product: Product) {
     this.productService.deleteProduct(product.id).subscribe({
       next: value => {
-        this.showToast(value.title+ ' deleted!', 'bg-success text-light');
+        this.showToast(value.title+ ' deleted!', 'bg-success text-light',1500);
+        console.log(value); //necesito saber la repuesta de la Api para completar el servicio
+        this.loadProducts(); //recargo la pagina después de haberlo borrado
       },
       error: error => {
-        this.showToast(error.message, 'bg-danger text-light');
+        this.showToast(error.message, 'bg-danger text-light',1500);
       }
     });
   }
+
+  private loadSearch() {
+    this.searchService.start().subscribe({
+      next: value => {
+        this.products = value;
+      },
+      error : error =>{
+        this.showToast(error.message, 'bg-danger text-light',2000);
+      }
+    });
+  }
+
+  buscar(event: any) {
+    this.searchService.search(event.target.value);
+
+  }
+
+  protected readonly faMagnifyingGlass = faMagnifyingGlass;
 }

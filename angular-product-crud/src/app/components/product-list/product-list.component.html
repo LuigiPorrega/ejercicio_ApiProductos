@@ -1,4 +1,11 @@
 @defer(when cargado){
+ <div class="d-flex justify-content-center align-items-center my-4">
+   <form class="d-flex" role="search">
+     <fa-icon [icon]="faMagnifyingGlass" class="text-primary me-2"></fa-icon>
+       <input type="search" class="form-control" placeholder="Search..." aria-label="Search"
+              (input)="buscar($event)">
+   </form>
+ </div>
   <div class="album py-5 bg-body-tertiary">
     <div class="container">
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
